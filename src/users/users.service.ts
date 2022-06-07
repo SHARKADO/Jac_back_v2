@@ -10,18 +10,6 @@ const connection = createConnection ()
 
 @Injectable()
 export class UsersService {
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
   async create(user: CreateUserDto) {
     const users = await (await connection).manager.query (`INSERT INTO users (id, email, password, first_name, last_name, date_of_birth, role_id, is_active) VALUES ('${user.id}', '${user.email}', '${user.password}', '${user.first_name}', '${user.last_name}', '${user.date_of_birth}', '${user.role_id}', '${user.is_active}')`);
     return users;
