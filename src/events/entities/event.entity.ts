@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { User } from "../../users/entities/user.entity";
+import { Users } from "../../users/entities/user.entity";
 import {Categories} from '../../categories/entities/category.entity'
 
 @Entity()
@@ -22,8 +22,8 @@ export class Event {
     @Column("int")
     places_nb: number;
 
-    @ManyToOne(type => User, user => user.id, { eager: true })
-    admin_id: User[];
+    @ManyToOne(type => Users, user => user.id, { eager: true })
+    admin_id: Users[];
 
     @ManyToOne(type => Categories, category => category.id, { eager: true })
     category_id: Categories[];

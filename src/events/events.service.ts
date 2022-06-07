@@ -1,26 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import {createConnection, getManager} from "typeorm";
+
+const connection = createConnection ()
 
 @Injectable()
 export class EventsService {
-  create(createEventDto: CreateEventDto) {
-    return 'This action adds a new event';
+  async create(event: CreateEventDto) {
+    const events = await (await connection).manager.query (`INSERT INTO events (id, title, description, is_open, is_active, places_nb, admin_id, date) VALUES ('${event.id}', '${event.title}', '${event.description}', '${event.is_open}', '${event.is_active}', '${event.places_nb}', '${event.admin_id}', '${event.date}')`);
+    return events;
   }
 
-  findAll() {
-    return `This action returns all events`;
+  async findAll() {
+    const event = await (await connection).manager.query ('SELECT * FROM events');
+    return event;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} event`;
+  async findOne(id: number) {
+    const event = await (await connection).manager.query (`SELECT * FROM events WHERE id=${id}`);
+    return event; 
   }
 
-  update(id: number, updateEventDto: UpdateEventDto) {
-    return `This action updates a #${id} event`;
+  async update(id: number, event: UpdateEventDto) {
+    const events = await (await connection).manager.query (`UPDATE events SET (title, description, is_open, is_active, places_nb, admin_id, date) = ('${event.title}', '${event.description}', '${event.is_open}', '${event.is_active}', '${event.places_nb}', '${event.admin_id}', '${event.date}') WHERE id=${id}`);
+    return events;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} event`;
+  async remove(id: number) {
+    const event = await (await connection).manager.query (`DELETE FROM event WHERE id=${id}`);
+    return event;
   }
 }

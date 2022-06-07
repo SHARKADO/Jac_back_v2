@@ -1,26 +1,49 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import {Users} from "./entities/user.entity"
+import {createConnection, getManager} from "typeorm";
+
+const connection = createConnection ()
+
+
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  private readonly users = [
+    {
+      userId: 1,
+      username: 'john',
+      password: 'changeme',
+    },
+    {
+      userId: 2,
+      username: 'maria',
+      password: 'guess',
+    },
+  ];
+  async create(user: CreateUserDto) {
+    const users = await (await connection).manager.query (`INSERT INTO users (id, email, password, first_name, last_name, date_of_birth, role_id, is_active) VALUES ('${user.id}', '${user.email}', '${user.password}', '${user.first_name}', '${user.last_name}', '${user.date_of_birth}', '${user.role_id}', '${user.is_active}')`);
+    return users;
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    const users = await (await connection).manager.query ('SELECT * FROM users');
+    return users;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    const user = await (await connection).manager.query (`SELECT * FROM users WHERE id=${id}`);
+    return user; 
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, user: UpdateUserDto) {
+    const users = await (await connection).manager.query (`UPDATE users SET (email, password, first_name, last_name, date_of_birth, role_id, is_active) = ('${user.email}', '${user.password}', '${user.first_name}', '${user.last_name}', '${user.date_of_birth}', '${user.role_id}', '${user.is_active}') WHERE id=${id}`);
+    return users;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await (await connection).manager.query (`DELETE FROM users WHERE id=${id}`);
+    return user;
   }
 }
